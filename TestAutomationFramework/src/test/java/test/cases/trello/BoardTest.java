@@ -37,8 +37,8 @@ public class BoardTest extends BaseTest {
 //        BoardsPage boardsPage = new BoardsPage(actions.getDriver());
 //        boardsPage.createBoard();
 
-        BoardPage boardPage = new BoardPage(actions.getDriver());
-        boardPage.assertAddListExists();
+        BoardsPage boardsPage = new BoardsPage(actions.getDriver());
+        boardsPage.assertBoardExists();
     }
 
     @Test
@@ -85,7 +85,7 @@ public class BoardTest extends BaseTest {
         boardsPage.createBoard();
 
         // delete board
-        trelloApi.deleteBoard("Board Name from Automation");
+       
 
         // Assert
     }

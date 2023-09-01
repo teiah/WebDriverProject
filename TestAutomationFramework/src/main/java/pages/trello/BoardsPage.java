@@ -32,6 +32,10 @@ public class BoardsPage extends BaseTrelloPage {
         actions.clickElement("trello.boardsPage.boardByTeamAndName", boardName);
     }
 
+    public void assertBoardExists(){
+        actions.waitForElementPresent("trello.boardsPage.boardByTeamAndName","Board Name from Automation");
+
+    }
     public void assertBoardIsDeleted(){
 
     }
