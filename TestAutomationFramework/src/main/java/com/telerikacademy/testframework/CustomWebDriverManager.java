@@ -28,7 +28,7 @@ public class CustomWebDriverManager {
         }
 
         private WebDriver setupBrowser() {
-            System.setProperty("webdriver.chrome.driver", "/Applications/chromedriver-mac-arm64/chromedriver");
+//            System.setProperty("webdriver.chrome.driver", "/Applications/chromedriver-mac-arm64/chromedriver");
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--remote-allow-origins=*");
             WebDriver driver = new ChromeDriver(options);
