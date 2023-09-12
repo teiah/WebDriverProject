@@ -78,14 +78,14 @@ public class BoardTest extends BaseTest {
 
 
     @Test
-    public void deleteBoardWhenDeleteButtonIsClicked() {
+    public void deleteBoardWhenDeleteButtonIsClicked() throws InterruptedException {
         // login and create additional board
         login();
         BoardsPage boardsPage = new BoardsPage(actions.getDriver());
         boardsPage.createBoard();
 
         // delete board
-       
+        boardsPage.deleteBoard();
 
         // Assert
     }
