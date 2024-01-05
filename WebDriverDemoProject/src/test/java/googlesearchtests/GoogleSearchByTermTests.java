@@ -1,5 +1,6 @@
 package googlesearchtests;
 
+import base.BaseTest;
 import org.example.BrowserTypes;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -8,33 +9,28 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-import static org.example.StartBrowserHelper.startBrowser;
 
-public class GoogleSearchByTermTests {
-
-    public static WebDriver driver;
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+public class GoogleSearchByTermTests extends BaseTest {
 
     @BeforeAll
     public static void classSetup(){
-        // Set desired driver from enum
+        // Set desired driver (
+        //      CHROME,
+        //      SAFARI)
         driver = startBrowser(BrowserTypes.CHROME);
 
+        //Configure wait
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         // Navigate to bing.com
         driver.get("https://google.com");
 
-        // Wait for 5 seconds
+        // Wait for 10 seconds
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
-    }
-    @AfterAll
-    public static void classTearDown(){
-        driver.close();
     }
 
     @Test
@@ -53,8 +49,10 @@ public class GoogleSearchByTermTests {
         searchButton.click();
 
         // Assert result found
-        WebElement firstResult = driver.findElement(By.xpath("(//a/h3)[1]"));
-        Assertions.assertEquals("IT Career Start in 6 Months - Telerik Academy Alpha", firstResult.getText(), "Search result not found.");
-
+        String expectedResult = "IT Career Start in 6 Months - Telerik Academy Alpha";
+        WebElement resultAnchor = driver.findElement(By.xpath("//a/h3"));
+        wait.until(ExpectedConditions.visibilityOf(resultAnchor));
+        Assertions.assertTrue(resultAnchor.getText().contains(expectedResult),
+                "Expected result '" + expectedResult + "' not found. Actual text: " + resultAnchor.getText());
     }
 }

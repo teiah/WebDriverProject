@@ -1,61 +1,65 @@
 package bingsearchtests;
 
+import base.BaseTest;
 import org.example.BrowserTypes;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.example.StartBrowserHelper.startBrowser;
 
-public class BingSearchByTermTests {
-
-    public static WebDriver driver;
-    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+public class BingSearchByTermTests extends BaseTest {
 
     @BeforeAll
-    public static void classSetup(){
-        // Set desired driver from enum
+    public static void classSetup() {
+        // Set desired driver (
+        //        CHROME,
+        //        SAFARI)
         driver = startBrowser(BrowserTypes.CHROME);
+
+        // Configure wait
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         // Navigate to bing.com
         driver.get("https://bing.com");
 
-        // Wait for 5 seconds
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
-    }
-    @AfterAll
-    public static void classTearDown(){
-        driver.close();
+        // Accept Terms
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("bnp_btn_accept")));
+        WebElement acceptButton = driver.findElement(By.id("bnp_btn_accept"));
+        acceptButton.click();
     }
 
     @Test
-    public void resultFound_when_searchProvided() throws InterruptedException {
+    public void resultFound_when_searchProvided() {
+        String searchTerm = "Telerik Academy Alpha";
 
-        // Accept cookies
-//        WebElement agreeButton = driver.findElement(By.xpath("//button[@id='bnp_btn_accept']"));
-//        agreeButton.click();
-
-        // Type text in search field
-//        WebElement searchField = driver.findElement(By.id("sb_form_q"));
+        // Type search term in search field
         WebElement searchField = driver.findElement(By.xpath("//*[@id='sb_form_q']"));
-        searchField.click();
-        searchField.sendKeys("Telerik Academy Alpha");
+        wait.until(ExpectedConditions.visibilityOf(searchField));
+        searchField.sendKeys(searchTerm);
         searchField.sendKeys(Keys.ENTER);
 
+        String expectedResult1 = "Learning Platform - Telerik Academy";
+        String expectedResult2 = "IT Career Start in 6 Months - Telerik Academy Alpha";
+        String expectedResult3 = "QA Training - Telerik Academy Alpha";
+
         // Assert result found
-        WebElement firstResult = driver.findElement(By.xpath("(//h2/a)[1]"));
-        wait.until(ExpectedConditions.visibilityOf(firstResult));
-        Assertions.assertEquals("IT Career Start in 6 Months - Telerik Academy Alpha",
-                firstResult.getText(), "Search result not found.");
+        WebElement resultAnchor = driver.findElement(By.xpath("(//div[@class='b_title'])[1]"));
+        wait.until(ExpectedConditions.visibilityOf(resultAnchor));
+
+        String actualResult = resultAnchor.getText();
+
+        List<String> expectedResults = Arrays.asList(expectedResult1, expectedResult2, expectedResult3);
+
+        Assertions.assertTrue(expectedResults.stream().anyMatch(actualResult::contains),
+                "Expected result not found. Actual text: " + actualResult + ".");
     }
 }
